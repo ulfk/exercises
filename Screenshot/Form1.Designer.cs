@@ -31,6 +31,7 @@
             this.buttonExecScreenshot = new System.Windows.Forms.Button();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonExit = new System.Windows.Forms.Button();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,6 +68,13 @@
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
             // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.DefaultExt = "png";
+            this.saveFileDialog.FileName = "Screenshot";
+            this.saveFileDialog.Filter = "PNG|*.png";
+            this.saveFileDialog.Title = "Screenshot speichern...";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -80,7 +88,6 @@
             this.Name = "Form1";
             this.Text = "ScreenshotApp";
             this.Shown += new System.EventHandler(this.Form1_Shown);
-            this.VisibleChanged += new System.EventHandler(this.Form1_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
 
@@ -91,6 +98,7 @@
         private System.Windows.Forms.Button buttonExecScreenshot;
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.Button buttonExit;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }
 

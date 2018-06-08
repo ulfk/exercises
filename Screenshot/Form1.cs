@@ -9,6 +9,16 @@ namespace ScreenshotApp
 
     public partial class Form1 : Form
     {
+        private Bitmap screenshotBitmap;
+        private Point prevFormLocation;
+        private int prevFormWidth;
+        private int prevFormHeight;
+
+        private Point selectionStartPoint;
+        private Point selectionEndPoint;
+        private Rectangle selectionRectangle = new Rectangle();
+        private readonly Brush selectionBrush = new SolidBrush(Color.FromArgb(128, 72, 145, 220));
+
         public Form1()
         {
             InitializeComponent();
@@ -16,29 +26,20 @@ namespace ScreenshotApp
 
         private Bitmap ExecuteScreenShot()
         {
-            //Create a new bitmap.
-            var bmpScreenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
+            var screenshotImage = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
                                            Screen.PrimaryScreen.Bounds.Height,
                                            PixelFormat.Format32bppArgb);
+            var screenshotGraphics = Graphics.FromImage(screenshotImage);
 
-            // Create a graphics object from the bitmap.
-            var gfxScreenshot = Graphics.FromImage(bmpScreenshot);
+            screenshotGraphics.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
+                                              Screen.PrimaryScreen.Bounds.Y,
+                                              0,
+                                              0,
+                                              Screen.PrimaryScreen.Bounds.Size,
+                                              CopyPixelOperation.SourceCopy);
 
-            // Take the screenshot from the upper left corner to the right bottom corner.
-            gfxScreenshot.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
-                                        Screen.PrimaryScreen.Bounds.Y,
-                                        0,
-                                        0,
-                                        Screen.PrimaryScreen.Bounds.Size,
-                                        CopyPixelOperation.SourceCopy);
-
-            // Save the screenshot to the specified path that the user has chosen.
-            bmpScreenshot.Save(@"C:\temp\Screenshot.png", ImageFormat.Png);
-
-            return bmpScreenshot;
+            return screenshotImage;
         }
-
-        private Bitmap screenshotBitmap;
 
         private void buttonExecScreenshot_Click(object sender, EventArgs e)
         {
@@ -46,6 +47,63 @@ namespace ScreenshotApp
             Thread.Sleep(200);
             screenshotBitmap = this.ExecuteScreenShot();
             this.Visible = true;
+
+            ShowPictureBox();
+        }
+
+        private void buttonExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void pictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            selectionStartPoint = e.Location;
+            pictureBox.Invalidate();
+        }
+
+        private void pictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                Point tempEndPoint = e.Location;
+                selectionRectangle = GetValidRectangle(selectionStartPoint, tempEndPoint);
+                pictureBox.Invalidate();
+            }
+        }
+
+        private void pictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            if (   pictureBox.Image != null 
+                && selectionRectangle != null 
+                && selectionRectangle.Width > 0 
+                && selectionRectangle.Height > 0)
+            {
+                e.Graphics.FillRectangle(selectionBrush, selectionRectangle);
+            }
+        }
+
+        private void pictureBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                selectionEndPoint = e.Location;
+                RestoreForm();
+                SaveCroppedImage();
+            }
+
+            if (e.Button == MouseButtons.Right)
+            {
+                buttonExit.BringToFront();
+            }
+        }
+
+        private void ShowPictureBox()
+        {
+            // save current window size and position
+            this.prevFormLocation = this.Location;
+            this.prevFormWidth = this.Width;
+            this.prevFormHeight = this.Height;
 
             // resize app window to fullscreen
             this.Location = new Point(0, 0);
@@ -58,100 +116,57 @@ namespace ScreenshotApp
             this.pictureBox.Height = Screen.PrimaryScreen.Bounds.Height;
             this.pictureBox.Image = screenshotBitmap;
             this.pictureBox.Visible = true;
+
+            this.Cursor = Cursors.Cross;
         }
 
-        private void Form1_VisibleChanged(object sender, EventArgs e)
+        private void RestoreForm()
         {
-        }
+            this.selectionRectangle.Width = 0;
+            this.selectionRectangle.Height = 0;
+            this.pictureBox.Invalidate();
+            this.pictureBox.Visible = false;
 
-        private void buttonExit_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
+            this.Location = this.prevFormLocation;
+            this.Width = this.prevFormWidth;
+            this.Height = this.prevFormHeight;
 
-        private Point RectStartPoint;
-        private Point RectEndPoint;
-        private bool RectValid = false;
-        private Rectangle Rect = new Rectangle();
-        private Brush selectionBrush = new SolidBrush(Color.FromArgb(128, 72, 145, 220));
-
-        // Start Rectangle
-        //
-        private void pictureBox_MouseDown(object sender, MouseEventArgs e)
-        {
-            // Determine the initial rectangle coordinates...
-            RectStartPoint = e.Location;
-            RectValid = true;
-            pictureBox.Invalidate();
-        }
-
-        // Draw Rectangle
-        //
-        private void pictureBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && RectValid)
-            {
-                Point tempEndPoint = e.Location;
-                Rect = GetValidRectangle(RectStartPoint, tempEndPoint);
-                pictureBox.Invalidate();
-            }
-        }
-
-        // Draw Area
-        //
-        private void pictureBox_Paint(object sender, PaintEventArgs e)
-        {
-            if (pictureBox.Image != null && Rect != null && Rect.Width > 0 && Rect.Height > 0)
-            {
-                e.Graphics.FillRectangle(selectionBrush, Rect);
-            }
-        }
-
-        private void pictureBox_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && RectValid)
-            {
-                RectEndPoint = e.Location;
-                RectValid = false;
-                SaveCroppedImage();
-                Rect.Width = 0;
-                Rect.Height = 0;
-                pictureBox.Invalidate();
-            }
-
-            if (e.Button == MouseButtons.Right)
-            {
-                buttonExit.BringToFront();
-            }
+            this.Cursor = Cursors.Default;
         }
 
         private void SaveCroppedImage()
         {
-            var croppedImage = CropImage(screenshotBitmap, RectStartPoint, RectEndPoint);
-            croppedImage.Save(@"C:\temp\Screenshot_Croped.png", ImageFormat.Png);
+            var croppedImage = CropImage(screenshotBitmap, selectionStartPoint, selectionEndPoint);
+
+            var result = saveFileDialog.ShowDialog();
+            if(result == DialogResult.OK)
+            {
+                croppedImage.Save(saveFileDialog.FileName, ImageFormat.Png);
+            }
         }
 
         private Bitmap CropImage(Image source, Point firstPoint, Point secondPoint)
         {
-            var crop = GetValidRectangle(firstPoint, secondPoint);
-            var bmp = new Bitmap(crop.Width, crop.Height);
-            using (var gr = Graphics.FromImage(bmp))
+            var cropRectangle = GetValidRectangle(firstPoint, secondPoint);
+            var croppedImage = new Bitmap(cropRectangle.Width, cropRectangle.Height);
+            using (var graphics = Graphics.FromImage(croppedImage))
             {
-                gr.DrawImage(source, new Rectangle(0, 0, bmp.Width, bmp.Height), crop, GraphicsUnit.Pixel);
+                graphics.DrawImage(source, new Rectangle(0, 0, croppedImage.Width, croppedImage.Height), cropRectangle, GraphicsUnit.Pixel);
             }
-            return bmp;
+
+            return croppedImage;
         }
 
         private Rectangle GetValidRectangle(Point firstPoint, Point secondPoint)
         {
-            int x, y, width, height;
+            int posX, posY, width, height;
 
-            x = Math.Min(firstPoint.X, secondPoint.X);
-            y = Math.Min(firstPoint.Y, secondPoint.Y);
+            posX = Math.Min(firstPoint.X, secondPoint.X);
+            posY = Math.Min(firstPoint.Y, secondPoint.Y);
             width = Math.Abs(firstPoint.X - secondPoint.X);
             height = Math.Abs(firstPoint.Y - secondPoint.Y);
 
-            return new Rectangle(x, y, width, height);
+            return new Rectangle(posX, posY, width, height);
         }
 
         private void Form1_Shown(object sender, EventArgs e)

@@ -21,6 +21,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NumberConverterLib", "Numbe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumberConverterTest", "NumberConverterTest\NumberConverterTest.csproj", "{49F8D438-0EDF-4E9E-8AC2-B9DE8E275CB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimzahlLib", "PrimzahlLib\PrimzahlLib.csproj", "{B133E7AE-F091-4A84-A566-3DE0950AB2B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimzahlTest", "PrimzahlTest\PrimzahlTest.csproj", "{33EF20FE-47E6-465C-B7F1-9AE60E30C4DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{49F8D438-0EDF-4E9E-8AC2-B9DE8E275CB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49F8D438-0EDF-4E9E-8AC2-B9DE8E275CB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49F8D438-0EDF-4E9E-8AC2-B9DE8E275CB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B133E7AE-F091-4A84-A566-3DE0950AB2B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B133E7AE-F091-4A84-A566-3DE0950AB2B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B133E7AE-F091-4A84-A566-3DE0950AB2B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B133E7AE-F091-4A84-A566-3DE0950AB2B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33EF20FE-47E6-465C-B7F1-9AE60E30C4DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33EF20FE-47E6-465C-B7F1-9AE60E30C4DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33EF20FE-47E6-465C-B7F1-9AE60E30C4DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33EF20FE-47E6-465C-B7F1-9AE60E30C4DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

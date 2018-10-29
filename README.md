@@ -10,7 +10,7 @@ Implementation for https://trainyourprogrammer.de/csharp-189-zahlen-umwandeln-bi
 ## Bruchrechnen, BruchrechnenTest, BruchrechnenUI
 Implementation of fractions calculation inlcuding unit tests and an easy UI to do some calculations
 
-## NumberConverterLib, NumberConverterLib
+## NumberConverterLib, NumberConverterTest
 Encode/decode values to/from any numeral system with bases from 2 to 62. To encode a value with bases higher than 10 the lib uses all upper case and all lower case letters.
 
 ## Screenshot
